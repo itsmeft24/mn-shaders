@@ -14,7 +14,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
     return OUT;
 }
 
-float4 ps_main( PS_INPUT IN ) : COLOR
+float4 ps_main( VS_OUTPUT IN ) : COLOR
 {
    float3 frameBuffer = tex2D( TexMap0, IN.TexCoord0 * PS_HDR_UVOffset.zw + PS_HDR_UVOffset.xy );
 

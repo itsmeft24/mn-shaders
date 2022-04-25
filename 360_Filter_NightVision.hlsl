@@ -22,13 +22,13 @@ VS_OUTPUT vs_main( VS_INPUT IN )
     return OUT;
 }
 
-float4 ps_main( PS_INPUT IN ) : COLOR
+float4 ps_main( VS_OUTPUT IN ) : COLOR
 {
    float3 originalColor = tex2D( TexMap1, IN.TexCoord1 );
 
    const float3 luminanceVector = float3( 0.299, 0.587, 0.114 );
 
-   float luminanceValue = dot( originalColor, luminanceVector ) * 4.0;
+   float luminanceValue = dot( originalColor, luminanceVector ) * 2.0;
    
    float3 nightVisionColor;
    

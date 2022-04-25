@@ -4,7 +4,7 @@
 #define USES_PARTICLE
 #define USES_TEXCOORD0
 #define USES_WORLDSHADOWMAP
-//#define USES_FOG
+#define USES_FOG
 
 #include "360_Globals.h"
 
@@ -12,10 +12,9 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 {
    VS_OUTPUT OUT;
    
-   //FOG_OUTPUT fog = CalculateFog( IN.Position );
+   FOG_OUTPUT fog = CalculateFog( IN.Position );
    
-   //float maxScale = fog.Distance * 0.20;
-	float maxScale = length(IN.Position - VS_WorldCameraPosition) * 0.20;
+   float maxScale = fog.Distance * 0.20;
 
    float4 worldPosition = IN.Position + VS_ParticleDeltaVectors[ IN.Data.x ] * min( IN.Data.y, maxScale );
    
@@ -24,12 +23,12 @@ VS_OUTPUT vs_main( VS_INPUT IN )
    OUT.TexCoord0     = IN.TexCoord0;
    OUT.TexCoord2     = ( worldPosition.xz - VS_WorldShadowMapRegion.xy ) * VS_WorldShadowMapRegion.zw;
    OUT.TexCoord2.y   = 1 - OUT.TexCoord2.y;
-   //OUT.Fog           = fog.Fog;
+   OUT.Fog           = fog.Fog;
    
    return OUT;
 }
 
-float4 ps_main( PS_INPUT IN ) : COLOR
+float4 ps_main( VS_OUTPUT IN ) : COLOR
 {
    float4 texDiffuse0 = tex2D( TexMap0, IN.TexCoord0 );
    

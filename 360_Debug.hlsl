@@ -10,7 +10,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
    return GenerateVertexShaderOutput( IN );
 }
 
-float4 ps_main( PS_INPUT IN ) : COLOR
+float4 ps_main( VS_OUTPUT IN ) : COLOR
 {
    return float4( IN.Color.rgb * 0.5, IN.Color.a );
 }

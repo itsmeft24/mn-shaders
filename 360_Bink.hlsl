@@ -5,12 +5,6 @@ struct VS_INPUT
    float4 T0  : TEXCOORD0;
 };
 
-struct PS_INPUT
-{
-   float4 Pos : POSITION;
-   float4 T0  : TEXCOORD0;
-};
-
 struct VS_OUTPUT
 {
    float2 T0  : TEXCOORD0;
@@ -29,7 +23,7 @@ VS_INPUT vs_main( VS_INPUT IN )
    return IN;
 }
 
-float4 ps_main( PS_INPUT IN ) : COLOR
+float4 ps_main( VS_OUTPUT IN ) : COLOR
 {
    float4 c;
 

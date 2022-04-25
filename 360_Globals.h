@@ -1,6 +1,3 @@
-#undef USES_DYNAMICSHADOWMAP
-#undef USES_BUMP
-#undef USES_FOG
 
 #if defined( USES_SKIN ) || defined( USES_PUPPET )
 
@@ -16,7 +13,7 @@
 
 #ifdef USES_LIGHTMAP
 
-   //#define USES_DYNAMICSHADOWMAP
+   #define USES_DYNAMICSHADOWMAP
 
 #endif
 
@@ -300,7 +297,7 @@ struct VS_OUTPUT
 
    #ifdef USES_WORLDNORMAL
 
-      float3 WorldNormal   : TEXCOORD6;
+      float3 WorldNormal   : TEXCOORD8;
 
    #endif
 
@@ -317,107 +314,6 @@ struct VS_OUTPUT
 
    #endif
 };
-
-struct PS_INPUT
-{
-   #if defined( USES_COLOR ) || defined( USES_ECOSYSTEM ) || defined( USES_PARTICLE )
-
-      float4 Color         : COLOR;
-
-   #endif
-
-   #ifdef USES_TEXCOORD0
-
-      float2 TexCoord0     : TEXCOORD0;
-
-   #endif
-
-   #ifdef USES_TEXCOORD1
-
-      float2 TexCoord1     : TEXCOORD1;
-
-   #endif
-
-   #if defined( USES_TEXCOORD2 ) || defined( USES_LIGHTMAP ) || defined( USES_WORLDSHADOWMAP )
-
-      float2 TexCoord2     : TEXCOORD2;
-
-   #endif
-
-   #ifdef USES_TEXCOORD3
-
-      float2 TexCoord3     : TEXCOORD3;
-
-   #endif
-
-   #ifdef USES_TEXCOORD4
-
-      float2 TexCoord4     : TEXCOORD4;
-
-   #endif
-
-   #ifdef USES_TEXCOORD5
-
-      float2 TexCoord5     : TEXCOORD5;
-
-   #endif
-
-   #ifdef USES_TEXCOORD6
-
-      float2 TexCoord6     : TEXCOORD6;
-
-   #endif
-
-   #ifdef USES_TEXCOORD7
-
-      float2 TexCoord7     : TEXCOORD7;
-
-   #endif
-
-   #ifdef USES_TEXGEN0
-
-      float2 TexGen0       : TEXCOORD3;
-
-   #endif
-
-   #ifdef USES_TEXGEN1
-
-      float2 TexGen1       : TEXCOORD4;
-
-   #endif
-
-   #ifdef USES_TEXGEN2
-   
-      float2 TexGen2       : TEXCOORD5;
-
-   #endif
-
-   #if defined( USES_DYNAMICSHADOWMAP )
-
-      float3 TexShadow     : TEXCOORD6;
-
-   #endif
-
-   #ifdef USES_WORLDPOSITION
-
-      float3 WorldPosition : TEXCOORD7;
-
-   #endif
-
-   #ifdef USES_WORLDNORMAL
-
-      float3 WorldNormal   : TEXCOORD6;
-
-   #endif
-
-   #ifdef USES_BUMP
-
-      float3 WorldTangent  : TEXCOORD9;
-      float3 WorldBinormal : TEXCOORD10;
-
-   #endif
-};
-
 
 #ifdef USES_SKIN
 
@@ -439,7 +335,7 @@ struct PS_INPUT
 
 #ifdef USES_BUMP
 
-   float3 CalculateBumpedNormal( PS_INPUT IN, float2 texBump )
+   float3 CalculateBumpedNormal( VS_OUTPUT IN, float2 texBump )
    {
       float3 unitWorldNormal   = normalize( IN.WorldNormal   );
       float3 unitWorldTangent  = normalize( IN.WorldTangent  );
@@ -671,7 +567,7 @@ LIGHT_OUTPUT CalculateLighting( LIGHT_INPUT IN )
    else
    {
       OUT.NonAmbientColor  = 0;
-      OUT.AmbientColor     = texDiffuse * IN.VertexColor;
+      OUT.AmbientColor     = texDiffuse * IN.VertexColor.rgb;
    }
 
    if ( IN.WantSpecular )
@@ -692,10 +588,9 @@ LIGHT_OUTPUT CalculateLighting( LIGHT_INPUT IN )
    {
       #ifdef USES_ENVMAP
 
-	//float2 reflectionCoordinates = mul( normalize( eyeVector - 4.0 * dot( eyeVector, IN.WorldNormal ) * IN.WorldNormal ), PS_ViewMatrix ) * PS_EnvMapScale + PS_EnvMapOffset;
+         float2 reflectionCoordinates = mul( normalize( eyeVector - 4.0 * dot( eyeVector, IN.WorldNormal ) * IN.WorldNormal ), PS_ViewMatrix ) * PS_EnvMapScale + PS_EnvMapOffset;
 
-	//float3 reflectionContribution = tex2D( REFLECTION_TEXTURE, reflectionCoordinates );
-	float3 reflectionContribution = OUT.AmbientColor;
+         float3 reflectionContribution = tex2D( REFLECTION_TEXTURE, reflectionCoordinates );
 
       #else
 
@@ -713,13 +608,12 @@ LIGHT_OUTPUT CalculateLighting( LIGHT_INPUT IN )
       OUT.AmbientColor = max( OUT.AmbientColor, lerp( OUT.AmbientColor, reflectionContribution, IN.ReflectionLevel ) );
    }
 
-
    return OUT;
 }
 
 float3 CalculateDetailColor( float4 texDiffuse, float3 texDetail )
 {
-   return lerp( texDiffuse, texDiffuse * texDetail, texDiffuse.a );
+   return lerp( texDiffuse.rgb, texDiffuse.rgb * texDetail, texDiffuse.a );
 }
 
 LIGHT_OUTPUT CalculateBlendColor( LIGHT_OUTPUT from, float3 to, float4 vertexColor )
@@ -754,7 +648,7 @@ LIGHT_OUTPUT CalculateBlendColor( LIGHT_OUTPUT from, LIGHT_OUTPUT to, float4 ver
 
 #ifdef USES_DYNAMICSHADOWMAP
 
-float3 CalculateShadowColor( PS_INPUT IN, float3 surfaceColor )
+float3 CalculateShadowColor( VS_OUTPUT IN, float3 surfaceColor )
 {
    float surfaceAlpha = ( length( IN.TexShadow.xy * 2.0 - 1.0 ) - 0.8 ) * 5.0;
 
@@ -786,7 +680,7 @@ float3 CalculateShadowColor( PS_INPUT IN, float3 surfaceColor )
 
 #endif
 
-float4 CalculateFinalColor( PS_INPUT IN, LIGHT_OUTPUT L, float alpha )
+float4 CalculateFinalColor( VS_OUTPUT IN, LIGHT_OUTPUT L, float alpha )
 {
    #ifdef USES_LIGHTMAP
 
@@ -855,7 +749,7 @@ float4 CalculateFinalColor( PS_INPUT IN, LIGHT_OUTPUT L, float alpha )
    return color;
 }
 
-float4 CalculateFinalColor( PS_INPUT IN, float4 color )
+float4 CalculateFinalColor( VS_OUTPUT IN, float4 color )
 {
    LIGHT_OUTPUT L;
 
@@ -865,7 +759,7 @@ float4 CalculateFinalColor( PS_INPUT IN, float4 color )
    return CalculateFinalColor( IN, L, color.a );
 }
 
-float4 CalculateFinalColor( PS_INPUT IN, float3 color, float alpha )
+float4 CalculateFinalColor( VS_OUTPUT IN, float3 color, float alpha )
 {
    LIGHT_OUTPUT L;
 

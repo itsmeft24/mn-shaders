@@ -5,7 +5,7 @@
 #define USES_WORLDSHADOWMAP
 #define USES_COLOR
 #define USES_TEXGEN0
-//#define USES_FOG
+#define USES_FOG
 
 #include "360_Globals.h"
 
@@ -22,12 +22,12 @@ VS_OUTPUT vs_main( VS_INPUT IN )
    OUT.TexGen0       = mul( float3( IN.TexCoord0.xy, 1 ), VS_TexGenMatrix );
    OUT.TexCoord2     = ( IN.Position.xz - VS_WorldShadowMapRegion.xy ) * VS_WorldShadowMapRegion.zw;
    OUT.TexCoord2.y   = 1 - OUT.TexCoord2.y;
-   //OUT.Fog           = CalculateFog( IN.Position ).Fog;
+   OUT.Fog           = CalculateFog( IN.Position ).Fog;
 
    return OUT;
 }
 
-float4 ps_main( PS_INPUT IN ) : COLOR
+float4 ps_main( VS_OUTPUT IN ) : COLOR
 {
    float4 texDiffuse0 = tex2D( TexMap0, IN.TexGen0 );
    

@@ -16,7 +16,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 
 #if ( AA_SOLUTION == AA_NONE )
 
-   float4 ps_main( PS_INPUT IN ) : COLOR
+   float4 ps_main( VS_OUTPUT IN ) : COLOR
    {
       float3 color = tex2D( TexMap0, IN.TexCoord0 );
       
@@ -28,7 +28,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
    float  PS_BlurDampingFactor  : register( c16 );
    float2 PS_SampleOffsets[ 4 ] : register( c17 );
 
-   float4 ps_main( PS_INPUT IN ) : COLOR
+   float4 ps_main( VS_OUTPUT IN ) : COLOR
    {
       float3 tMinus2 = tex2D( TexMap[ 0 ], IN.TexCoord0 ); // Current Frame - 2
       float3 tMinus1 = tex2D( TexMap[ 1 ], IN.TexCoord0 ); // Current Frame - 1
@@ -60,7 +60,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 
 #elif ( AA_SOLUTION == AA_USE_ONE_FRAME_PIXEL_OFFSET_WITHOUT_AF ) || ( AA_SOLUTION == AA_USE_ONE_FRAME_PIXEL_OFFSET_WITH_AF )
 
-   float4 ps_main( PS_INPUT IN ) : COLOR
+   float4 ps_main( VS_OUTPUT IN ) : COLOR
    {
       float3 shift0 = tex2D( TexMap0, IN.TexCoord0 );
       float3 shift1 = tex2D( TexMap1, IN.TexCoord0 );
@@ -72,7 +72,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 
    float2 PS_SampleOffsets[ 5 ] : register( c16 );
 
-   float4 ps_main( PS_INPUT IN ) : COLOR
+   float4 ps_main( VS_OUTPUT IN ) : COLOR
    {
       float3 color = 0.0;
       
@@ -90,7 +90,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 
    float PS_ColorScale : register( c16 );
 
-   float4 ps_main( PS_INPUT IN ) : COLOR
+   float4 ps_main( VS_OUTPUT IN ) : COLOR
    {
       float3 color = tex2D( TexMap0, IN.TexCoord0 );
       

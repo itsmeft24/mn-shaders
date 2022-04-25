@@ -3,7 +3,7 @@
 #define USES_TEXCOORD0
 #define USES_WORLDPOSITION
 #define USES_WORLDNORMAL
-//#define USES_FOG
+#define USES_FOG
 
 #define REFLECTION_TEXTURE TexMap1
 
@@ -14,7 +14,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
    return GenerateVertexShaderOutput( IN );
 }
 
-float4 ps_main( PS_INPUT IN ) : COLOR
+float4 ps_main( VS_OUTPUT IN ) : COLOR
 {
    float4 texDiffuse0 = tex2D( TexMap0, IN.TexCoord0 );
    

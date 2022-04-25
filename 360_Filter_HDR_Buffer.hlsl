@@ -14,7 +14,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
     return OUT;
 }
 
-float4 ps_main( PS_INPUT IN ) : COLOR
+float4 ps_main( VS_OUTPUT IN ) : COLOR
 {
    float3 tex0 = tex2D( TexMap0, IN.TexCoord0 );
    float3 tex1 = tex2D( TexMap1, IN.TexCoord0 );
