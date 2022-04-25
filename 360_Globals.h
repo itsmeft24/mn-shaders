@@ -1,3 +1,6 @@
+#undef USES_DYNAMICSHADOWMAP
+#undef USES_BUMP
+#undef USES_FOG
 
 #if defined( USES_SKIN ) || defined( USES_PUPPET )
 
@@ -13,7 +16,7 @@
 
 #ifdef USES_LIGHTMAP
 
-   #define USES_DYNAMICSHADOWMAP
+   //#define USES_DYNAMICSHADOWMAP
 
 #endif
 
@@ -689,9 +692,10 @@ LIGHT_OUTPUT CalculateLighting( LIGHT_INPUT IN )
    {
       #ifdef USES_ENVMAP
 
-         float2 reflectionCoordinates = mul( normalize( eyeVector - 4.0 * dot( eyeVector, IN.WorldNormal ) * IN.WorldNormal ), PS_ViewMatrix ) * PS_EnvMapScale + PS_EnvMapOffset;
+	//float2 reflectionCoordinates = mul( normalize( eyeVector - 4.0 * dot( eyeVector, IN.WorldNormal ) * IN.WorldNormal ), PS_ViewMatrix ) * PS_EnvMapScale + PS_EnvMapOffset;
 
-         float3 reflectionContribution = tex2D( REFLECTION_TEXTURE, reflectionCoordinates );
+	//float3 reflectionContribution = tex2D( REFLECTION_TEXTURE, reflectionCoordinates );
+	float3 reflectionContribution = OUT.AmbientColor;
 
       #else
 
@@ -708,6 +712,7 @@ LIGHT_OUTPUT CalculateLighting( LIGHT_INPUT IN )
 
       OUT.AmbientColor = max( OUT.AmbientColor, lerp( OUT.AmbientColor, reflectionContribution, IN.ReflectionLevel ) );
    }
+
 
    return OUT;
 }
