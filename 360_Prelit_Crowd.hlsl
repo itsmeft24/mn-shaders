@@ -22,7 +22,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
    OUT.TexGen0       = mul( float3( IN.TexCoord0.xy, 1 ), VS_TexGenMatrix );
    OUT.TexCoord2     = ( IN.Position.xz - VS_WorldShadowMapRegion.xy ) * VS_WorldShadowMapRegion.zw;
    OUT.TexCoord2.y   = 1 - OUT.TexCoord2.y;
-   OUT.Fog           = CalculateFog( IN.Position ).Fog;
+   //OUT.Fog           = CalculateFog( IN.Position ).Fog;
 
    return OUT;
 }

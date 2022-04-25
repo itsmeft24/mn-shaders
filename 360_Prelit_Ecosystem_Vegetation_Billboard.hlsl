@@ -16,7 +16,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 	OUT.Position	= mul( worldPosition, VS_WorldViewProjMatrix );
 	OUT.Color		= float4( VS_VegetationColors[ IN.Data.y ].rgb, IN.Data.x / 128.0 );
 	OUT.TexCoord0	= IN.TexCoord0;
-	OUT.Fog			= CalculateFog( worldPosition ).Fog;
+	//OUT.Fog			= CalculateFog( worldPosition ).Fog;
 	
 	return OUT;
 }

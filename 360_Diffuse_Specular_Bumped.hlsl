@@ -21,7 +21,7 @@ float4 ps_main( VS_OUTPUT IN ) : COLOR
    LIGHT_INPUT L;
    
    L.WorldPosition      = IN.WorldPosition;
-   L.WorldNormal        = CalculateBumpedNormal( IN, texBump0 );
+   L.WorldNormal        = IN.WorldNormal; //CalculateBumpedNormal( IN, texBump0 );
    L.VertexColor        = 0;
    L.TexDiffuse0        = texDiffuse0;
    L.GlossPower         = texGloss0.r;

@@ -20,7 +20,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 	OUT.TexCoord0	   = IN.TexCoord0;
    OUT.TexCoord2     = ( worldPosition.xz - VS_WorldShadowMapRegion.xy ) * VS_WorldShadowMapRegion.zw;
    OUT.TexCoord2.y   = 1 - OUT.TexCoord2.y;
-	OUT.Fog			   = CalculateFog( worldPosition ).Fog;
+	//OUT.Fog			   = CalculateFog( worldPosition ).Fog;
 	
 	return OUT;
 }
