@@ -28,7 +28,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 float4 ps_main( PS_INPUT IN ) : COLOR
 {
    float4 texDiffuse0 = tex2D( TexMap0, IN.TexCoord0 );
-    
+   
    LIGHT_OUTPUT L;
    
    L.NonAmbientColor = texDiffuse0 * IN.Color;

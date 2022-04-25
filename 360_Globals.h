@@ -13,7 +13,7 @@
 
 #ifdef USES_LIGHTMAP
 
-   //#define USES_DYNAMICSHADOWMAP
+   #define USES_DYNAMICSHADOWMAP
 
 #endif
 
@@ -57,19 +57,19 @@ float4   PS_ShaderColorScale           : register( c0 );
 float4   PS_ObjectColorScale           : register( c1 );
 float4   PS_FogColor                   : register( c2 );
 
-//#ifndef USES_ECOLIGHT
+#ifndef USES_ECOLIGHTS
 
    float3   PS_AmbientColor            : register( c3 );
    float3   PS_SunlightColor           : register( c4 );
    float3   PS_SunlightDirection       : register( c5 );
 
-//#else
-//
-//   float3   PS_AmbientColor            : register( c6 );
-//   float3   PS_SunlightColor           : register( c7 );
-//   float3   PS_SunlightDirection       : register( c8 );
-//
-//#endif
+#else
+
+   float3   PS_AmbientColor            : register( c6 );
+   float3   PS_SunlightColor           : register( c7 );
+   float3   PS_SunlightDirection       : register( c8 );
+
+#endif
 
 float3   PS_WorldCameraPosition        : register( c9 );
 float3x2 PS_ViewMatrix                 : register( c10 );
@@ -285,26 +285,26 @@ struct VS_OUTPUT
 
    #if defined( USES_DYNAMICSHADOWMAP )
 
-      float3 TexShadow     : TEXCOORD5;
+      float3 TexShadow     : TEXCOORD6;
 
    #endif
 
    #ifdef USES_WORLDPOSITION
 
-      float3 WorldPosition : TEXCOORD6;
+      float3 WorldPosition : TEXCOORD7;
 
    #endif
 
    #ifdef USES_WORLDNORMAL
 
-      float3 WorldNormal   : TEXCOORD5;
+      float3 WorldNormal   : TEXCOORD6;
 
    #endif
 
    #ifdef USES_BUMP
 
-      float3 WorldTangent  : TEXCOORD8;
-      float3 WorldBinormal : TEXCOORD9;
+      float3 WorldTangent  : TEXCOORD9;
+      float3 WorldBinormal : TEXCOORD10;
 
    #endif
 
@@ -391,26 +391,26 @@ struct PS_INPUT
 
    #if defined( USES_DYNAMICSHADOWMAP )
 
-      float3 TexShadow     : TEXCOORD5;
+      float3 TexShadow     : TEXCOORD6;
 
    #endif
 
    #ifdef USES_WORLDPOSITION
 
-      float3 WorldPosition : TEXCOORD6;
+      float3 WorldPosition : TEXCOORD7;
 
    #endif
 
    #ifdef USES_WORLDNORMAL
 
-      float3 WorldNormal   : TEXCOORD5;
+      float3 WorldNormal   : TEXCOORD6;
 
    #endif
 
    #ifdef USES_BUMP
 
-      float3 WorldTangent  : TEXCOORD8;
-      float3 WorldBinormal : TEXCOORD9;
+      float3 WorldTangent  : TEXCOORD9;
+      float3 WorldBinormal : TEXCOORD10;
 
    #endif
 };
@@ -637,7 +637,7 @@ LIGHT_OUTPUT CalculateLighting( LIGHT_INPUT IN )
 {
    LIGHT_OUTPUT OUT;
 
-   //IN.WorldNormal = normalize( IN.WorldNormal );
+   IN.WorldNormal = normalize( IN.WorldNormal );
 
    float3 eyeVector = normalize( PS_WorldCameraPosition - IN.WorldPosition );
 
@@ -689,26 +689,24 @@ LIGHT_OUTPUT CalculateLighting( LIGHT_INPUT IN )
    {
       #ifdef USES_ENVMAP
 
-         //float2 reflectionCoordinates = mul( normalize( eyeVector - 4.0 * dot( eyeVector, IN.WorldNormal ) * IN.WorldNormal ), PS_ViewMatrix ) * PS_EnvMapScale + PS_EnvMapOffset;
+         float2 reflectionCoordinates = mul( normalize( eyeVector - 4.0 * dot( eyeVector, IN.WorldNormal ) * IN.WorldNormal ), PS_ViewMatrix ) * PS_EnvMapScale + PS_EnvMapOffset;
 
-         //float3 reflectionContribution = tex2D( REFLECTION_TEXTURE, reflectionCoordinates ) * 4;
+         float3 reflectionContribution = tex2D( REFLECTION_TEXTURE, reflectionCoordinates );
 
       #else
 
-         //float3 reflectionCoordinates = reflect( eyeVector, IN.WorldNormal );
+         float3 reflectionCoordinates = reflect( eyeVector, IN.WorldNormal );
 
-         //float3 reflectionContribution = texCUBE( REFLECTION_TEXTURE, reflectionCoordinates );
+         float3 reflectionContribution = texCUBE( REFLECTION_TEXTURE, reflectionCoordinates );
 
       #endif
 
-      //if ( IN.WantFresnel )
-      //{
-      //   IN.ReflectionLevel = IN.ReflectionLevel * viewAngle;
-      //}
+      if ( IN.WantFresnel )
+      {
+         IN.ReflectionLevel = IN.ReflectionLevel * viewAngle;
+      }
 
-      //OUT.AmbientColor = max( OUT.AmbientColor, lerp( OUT.AmbientColor, reflectionContribution, IN.ReflectionLevel ) );
-	  
-	   OUT.AmbientColor = saturate(OUT.AmbientColor + (0.05,0.05,0.05));
+      OUT.AmbientColor = max( OUT.AmbientColor, lerp( OUT.AmbientColor, reflectionContribution, IN.ReflectionLevel ) );
    }
 
    return OUT;
@@ -787,7 +785,7 @@ float4 CalculateFinalColor( PS_INPUT IN, LIGHT_OUTPUT L, float alpha )
 {
    #ifdef USES_LIGHTMAP
 
-      float3 texLightmap = tex2D( TexMap5, IN.TexCoord2 );
+      float3 texLightmap = tex2D( TexMap6, IN.TexCoord2 );
 
       #ifdef USES_DYNAMICSHADOWMAP
 
@@ -804,7 +802,7 @@ float4 CalculateFinalColor( PS_INPUT IN, LIGHT_OUTPUT L, float alpha )
 
    #ifdef USES_WORLDSHADOWMAP
 
-      float3 texShadowmap = tex2D( TexMap4, IN.TexCoord2 );
+      float3 texShadowmap = tex2D( TexMap7, IN.TexCoord2 );
 
       #ifdef USES_ECOSYSTEM
 

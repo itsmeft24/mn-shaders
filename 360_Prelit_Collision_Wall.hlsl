@@ -11,10 +11,9 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 
 float4 ps_main( PS_INPUT IN ) : COLOR
 {
-   //float3 eyeVector = PS_WorldCameraPosition - IN.WorldPosition;
+   float3 eyeVector = PS_WorldCameraPosition - IN.WorldPosition;
    
-   //float alpha = 1.0 - saturate( ( length( eyeVector ) - 200.0 ) / 400.0 );
-   float alpha = 1.0;
+   float alpha = 1.0 - saturate( ( length( eyeVector ) - 200.0 ) / 400.0 );
    
    return float4( PS_ShaderColorScale.rgb, PS_ShaderColorScale.a * alpha );
 }

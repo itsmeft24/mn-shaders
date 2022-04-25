@@ -12,7 +12,7 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 	float4 worldPosition = ( IN.Position * VS_ShrubberyScale + VS_ShrubberyOffset ) + ( IN.Delta * VS_VegetationVector );
 	
 	//FOG_OUTPUT fog = CalculateFog( worldPosition );
-	float Distance = length(worldPosition - VS_WorldCameraPosition);
+	float Distance = length(worldPosition  - VS_WorldCameraPosition);
 	
 	VS_OUTPUT OUT;
 	

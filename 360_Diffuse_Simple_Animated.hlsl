@@ -20,7 +20,6 @@ float4 ps_main( PS_INPUT IN ) : COLOR
    L.WorldNormal        = IN.WorldNormal;
    L.VertexColor        = 0;
    L.TexDiffuse0        = texDiffuse0;
-   L.TexDiffuse1		= 0;
    L.GlossPower         = 0;
    L.GlossLevel         = 0;
    L.ReflectionLevel    = 0;

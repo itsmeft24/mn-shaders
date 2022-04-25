@@ -17,8 +17,6 @@ float4 ps_main( PS_INPUT IN ) : COLOR
    float4 texDiffuse0 = tex2D( TexMap0, IN.TexCoord0 );
    float3 texGloss0   = tex2D( TexMap1, IN.TexCoord0 );
    //float2 texBump0    = tex2D( TexMap2, IN.TexCoord0 ) * float2( 2, 2 ) - float2( 1, 1 );
-
-
    
    LIGHT_INPUT L;
    
@@ -26,17 +24,14 @@ float4 ps_main( PS_INPUT IN ) : COLOR
    L.WorldNormal        = IN.WorldNormal; //CalculateBumpedNormal( IN, texBump0 );
    L.VertexColor        = 0;
    L.TexDiffuse0        = texDiffuse0;
-   L.TexDiffuse1		= 0;
    L.GlossPower         = texGloss0.r;
    L.GlossLevel         = texGloss0.g;
    L.ReflectionLevel    = 0;
    L.WantAmbient        = 1;
    L.WantDiffuse        = 1;
-   L.WantSpecular       = 0;
+   L.WantSpecular       = 1;
    L.WantReflection     = 0;
    L.WantFresnel        = 0;
    
    return CalculateFinalColor( IN, CalculateLighting( L ), texDiffuse0.a );
-
-
 }

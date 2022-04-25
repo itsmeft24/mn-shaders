@@ -14,14 +14,13 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 float4 ps_main( PS_INPUT IN ) : COLOR
 {
    float4 texDiffuse0 = tex2D( TexMap0, IN.TexCoord0 );
-   
+
    LIGHT_INPUT L;
    
    L.WorldPosition      = 0;
    L.WorldNormal        = IN.WorldNormal;
    L.VertexColor        = 0;
    L.TexDiffuse0        = texDiffuse0;
-   L.TexDiffuse1        = 0;
    L.GlossPower         = 0;
    L.GlossLevel         = 0;
    L.ReflectionLevel    = 0;
@@ -32,13 +31,4 @@ float4 ps_main( PS_INPUT IN ) : COLOR
    L.WantFresnel        = 0;
    
    return CalculateFinalColor( IN, CalculateLighting( L ), texDiffuse0.a );
-   
-   //float diffuseContribution = max( dot( IN.WorldNormal, PS_SunlightDirection ), 0 );
-   //float diffuseContribution = 1;
-   //LIGHT_OUTPUT L;
-   //L.NonAmbientColor  = texDiffuse0 * PS_SunlightColor * diffuseContribution;
-   //L.AmbientColor     = texDiffuse0 * PS_AmbientColor;
-      
-   //return CalculateFinalColor( IN, L, texDiffuse0.a );
-
 }

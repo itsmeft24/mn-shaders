@@ -3,7 +3,7 @@
 
 #include "360_Globals.h"
 
-float PS_FlareAlpha : register( c7 );
+float PS_FlareAlpha : register( c16 );
 
 VS_OUTPUT vs_main( VS_INPUT IN )
 {

@@ -15,7 +15,6 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 
 float4 ps_main( PS_INPUT IN ) : COLOR
 {
-
    float4 texDiffuse0 = tex2D( TexMap0, IN.TexCoord0 );
    float3 texDetail0  = tex2D( TexMap1, IN.TexGen0   );
    float3 texGloss0   = tex2D( TexMap2, IN.TexCoord0 );
@@ -26,16 +25,14 @@ float4 ps_main( PS_INPUT IN ) : COLOR
    L.WorldNormal        = IN.WorldNormal;
    L.VertexColor        = IN.Color;
    L.TexDiffuse0        = CalculateDetailColor( texDiffuse0, texDetail0 );
-   L.TexDiffuse1        = 0;
    L.GlossPower         = texGloss0.r;
    L.GlossLevel         = texGloss0.g;
    L.ReflectionLevel    = 0;
    L.WantAmbient        = 0;
    L.WantDiffuse        = 0;
-   L.WantSpecular       = 0;
+   L.WantSpecular       = 1;
    L.WantReflection     = 0;
    L.WantFresnel        = 0;
    
    return CalculateFinalColor( IN, CalculateLighting( L ), IN.Color.a );
-
 }

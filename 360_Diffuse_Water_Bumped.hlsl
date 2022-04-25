@@ -3,7 +3,7 @@
 #define USES_COLOR
 #define USES_TEXCOORD0
 #define USES_TEXGEN1
-//#define USES_TEXGEN2
+#define USES_TEXGEN2
 #define USES_WORLDPOSITION
 #define USES_WORLDNORMAL
 //#define USES_FOG
@@ -29,15 +29,14 @@ float4 ps_main( PS_INPUT IN ) : COLOR
    L.WorldNormal        = IN.WorldNormal; //CalculateBumpedNormal( IN, texBump0 + texBump1 );
    L.VertexColor        = 0;
    L.TexDiffuse0        = tex2D( TexMap0, IN.TexCoord0 + L.WorldNormal.xy * 0.1 );  // uses the vector calculated above
-   L.TexDiffuse1		= 0;
    L.GlossPower         = texGloss0.r;
    L.GlossLevel         = texGloss0.g;
    L.ReflectionLevel    = texGloss0.b;
    L.WantAmbient        = 1;
    L.WantDiffuse        = 1;
-   L.WantSpecular       = 0;
-   L.WantReflection     = 0;
-   L.WantFresnel        = 0;
+   L.WantSpecular       = 1;
+   L.WantReflection     = 1;
+   L.WantFresnel        = 1;
    
    return CalculateFinalColor( IN, CalculateLighting( L ), IN.Color.a );
 }

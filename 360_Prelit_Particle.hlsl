@@ -32,10 +32,10 @@ VS_OUTPUT vs_main( VS_INPUT IN )
 float4 ps_main( PS_INPUT IN ) : COLOR
 {
    float4 texDiffuse0 = tex2D( TexMap0, IN.TexCoord0 );
-
+   
    LIGHT_OUTPUT L;
 
-   L.NonAmbientColor = texDiffuse0.rgb + texDiffuse0.rgb * 0.25;
+   L.NonAmbientColor = texDiffuse0.rgb * 1.25;
    L.AmbientColor    = texDiffuse0.rgb * 0.75;
 
    return CalculateFinalColor( IN, L, texDiffuse0.a * IN.Color.a );

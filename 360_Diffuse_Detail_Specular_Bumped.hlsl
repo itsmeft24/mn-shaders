@@ -26,13 +26,12 @@ float4 ps_main( PS_INPUT IN ) : COLOR
    L.WorldNormal        = IN.WorldNormal; //CalculateBumpedNormal( IN, texBump0 );
    L.VertexColor        = 0;
    L.TexDiffuse0        = CalculateDetailColor( texDiffuse0, texDetail0 );
-   L.TexDiffuse1		= 0;
    L.GlossPower         = texGloss0.r;
    L.GlossLevel         = texGloss0.g;
    L.ReflectionLevel    = 0;
    L.WantAmbient        = 1;
    L.WantDiffuse        = 1;
-   L.WantSpecular       = 0;
+   L.WantSpecular       = 1;
    L.WantReflection     = 0;
    L.WantFresnel        = 0;
    
