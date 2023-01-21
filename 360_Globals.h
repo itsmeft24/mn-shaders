@@ -77,8 +77,8 @@ float2   PS_EnvMapScale                : register( c12 );
 float2   PS_EnvMapOffset               : register( c13 );
 float4   PS_InverseDepthProjection     : register( c14 );
 float2   PS_DistanceFadeMinMax         : register( c15 );
-float    PS_GlossPower                 : register( c16 );
-float3   PS_ShadowColor                : register( c17 );
+float    PS_GlossPower                 : register( c98 );
+float3   PS_ShadowColor                : register( c99 );
 
 sampler  TexMap[ 16 ]                  : register( s0 );
 
@@ -285,26 +285,26 @@ struct VS_OUTPUT
 
    #if defined( USES_DYNAMICSHADOWMAP )
 
-      float3 TexShadow     : TEXCOORD6;
+      float3 TexShadow     : TEXCOORD5;
 
    #endif
 
    #ifdef USES_WORLDPOSITION
 
-      float3 WorldPosition : TEXCOORD7;
+      float3 WorldPosition : TEXCOORD6;
 
    #endif
 
    #ifdef USES_WORLDNORMAL
 
-      float3 WorldNormal   : TEXCOORD8;
+      float3 WorldNormal   : TEXCOORD7;
 
    #endif
 
    #ifdef USES_BUMP
 
-      float3 WorldTangent  : TEXCOORD9;
-      float3 WorldBinormal : TEXCOORD10;
+      float3 WorldTangent  : TEXCOORD8;
+      float3 WorldBinormal : TEXCOORD9;
 
    #endif
 
@@ -567,7 +567,7 @@ LIGHT_OUTPUT CalculateLighting( LIGHT_INPUT IN )
    else
    {
       OUT.NonAmbientColor  = 0;
-      OUT.AmbientColor     = texDiffuse * IN.VertexColor.rgb;
+      OUT.AmbientColor     = texDiffuse * IN.VertexColor;
    }
 
    if ( IN.WantSpecular )
@@ -590,7 +590,7 @@ LIGHT_OUTPUT CalculateLighting( LIGHT_INPUT IN )
 
          float2 reflectionCoordinates = mul( normalize( eyeVector - 4.0 * dot( eyeVector, IN.WorldNormal ) * IN.WorldNormal ), PS_ViewMatrix ) * PS_EnvMapScale + PS_EnvMapOffset;
 
-         float3 reflectionContribution = tex2D( REFLECTION_TEXTURE, reflectionCoordinates );
+         float3 reflectionContribution = tex2D( REFLECTION_TEXTURE, reflectionCoordinates ) * 4;
 
       #else
 
@@ -613,7 +613,7 @@ LIGHT_OUTPUT CalculateLighting( LIGHT_INPUT IN )
 
 float3 CalculateDetailColor( float4 texDiffuse, float3 texDetail )
 {
-   return lerp( texDiffuse.rgb, texDiffuse.rgb * texDetail, texDiffuse.a );
+   return lerp( texDiffuse, texDiffuse * texDetail, texDiffuse.a );
 }
 
 LIGHT_OUTPUT CalculateBlendColor( LIGHT_OUTPUT from, float3 to, float4 vertexColor )
@@ -658,13 +658,13 @@ float3 CalculateShadowColor( VS_OUTPUT IN, float3 surfaceColor )
    }
    else
    {
-      float offset = 1.0 / 1024.0;
+      float offset = 1.0 / 1344.0;
 
-      float depth1 = tex2D( TexMap5,  IN.TexShadow + float2(     0.0,  offset ) ).r;
-      float depth2 = tex2D( TexMap5,  IN.TexShadow + float2( -offset,     0.0 ) ).r;
-      float depth3 = tex2D( TexMap5, IN.TexShadow + float2(     0.0,     0.0 ) ).r;
-      float depth4 = tex2D( TexMap5, IN.TexShadow + float2(  offset,     0.0 ) ).r;
-      float depth5 = tex2D( TexMap5, IN.TexShadow + float2(     0.0, -offset ) ).r;
+      float depth1 = tex2D( TexMap8,  IN.TexShadow + float2(     0.0,  offset ) ).r;
+      float depth2 = tex2D( TexMap9,  IN.TexShadow + float2( -offset,     0.0 ) ).r;
+      float depth3 = tex2D( TexMap10, IN.TexShadow + float2(     0.0,     0.0 ) ).r;
+      float depth4 = tex2D( TexMap11, IN.TexShadow + float2(  offset,     0.0 ) ).r;
+      float depth5 = tex2D( TexMap12, IN.TexShadow + float2(     0.0, -offset ) ).r;
 
       float alpha1 = step( IN.TexShadow.z, depth1 );
       float alpha2 = step( IN.TexShadow.z, depth2 );
@@ -722,7 +722,7 @@ float4 CalculateFinalColor( VS_OUTPUT IN, LIGHT_OUTPUT L, float alpha )
 
    #else
 
-      float colorMultiplier = 1.00;
+      float colorMultiplier = 0.25;
 
    #endif
 

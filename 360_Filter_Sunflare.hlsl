@@ -19,7 +19,7 @@ float4 ps_main( VS_OUTPUT IN ) : COLOR
 {
    float4 texDiffuse0 = tex2D( TexMap0, IN.TexCoord0 );
    
-   float3 color = texDiffuse0.rgb * PS_FlareAlpha;
+   float3 color = texDiffuse0.rgb * PS_FlareAlpha * 0.25;
    float  alpha = lerp( 1.0, texDiffuse0.a, PS_FlareAlpha.x );
    
    return float4( color, alpha );

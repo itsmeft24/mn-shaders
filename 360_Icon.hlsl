@@ -17,5 +17,5 @@ float4 ps_main( VS_OUTPUT IN ) : COLOR
 {
    float4 texDiffuse0 = tex2D( TexMap0, IN.TexCoord0 ) * PS_ObjectColorScale * PS_ShaderColorScale;
    
-   return texDiffuse0;
+   return float4( texDiffuse0.xyz * 0.25, texDiffuse0.a );
 }
